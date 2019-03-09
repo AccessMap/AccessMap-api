@@ -1,0 +1,18 @@
+# Python bytecode
+*.pyc
+*__pycache__
+
+# Install test files
+*.egg-info
+
+# Python virtual environment
+venv
+
+# vim editor files
+*.swp
+
+# Environment variable config (sensitive info!)
+.env
+
+# Testing DBs
+*.db
