@@ -2,7 +2,13 @@ import os
 from xml.etree import ElementTree as ET
 
 from flask import Blueprint, current_app, jsonify, redirect, request, url_for
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    get_jwt_identity,
+    jwt_required,
+    jwt_refresh_token_required
+)
 from authlib.client import OAuth1Session
 from authlib.flask.client import OAuth
 
@@ -16,6 +22,11 @@ bp = Blueprint("auth", __name__, url_prefix="/auth")
 @bp.route("/login")
 def login():
     redirect_uri = url_for("auth.authorize", _external=True)
+    if request.is_json:
+        landing = request.json.get("landing", None)
+        if landing is not None:
+            redirect_uri = url_for("auth.authorize", _external=True)
+
     redir = oauth.openstreetmap.authorize_redirect(redirect_uri)
     return redir
 
@@ -44,43 +55,32 @@ def authorize():
         oauth_token_secret=token_secret
     )
 
-    access_token = create_access_token(identity=osm_token_row.user_id)
-    return jsonify(access_token=access_token), 200
+    identity=osm_token_row.user_id
+
+    # FIXME: identity should be a hash, not user ID.
+    # FIXME: User ID should also be a hash - though not the same as identity.
+    access_token = create_access_token(identity)
+    refresh_token = create_refresh_token(identity)
+    # TODO: create a whitelist of callback URIs, allow callback URI to be issued at
+    # /login endpoint. Should also create an API key that is associated with a given
+    # callback URI - new clients are registered by creating a new pair of:
+    #    - API Key
+    #    - (short) list of allowed callback URIs
+    consumer_callback_uri = current_app.config.get("CONSUMER_CALLBACK_URI")
+
+    url = "{}?access_token={}&refresh_token={}".format(consumer_callback_uri, access_token, refresh_token)
+
+    return redirect(url)
 
 
-@bp.route("/token", methods=["POST"])
-def token():
-    """Exchange an OSM access token for an AccessMap access JWT."""
-
-    # Verify inputs
-    if not request.is_json:
-        return jsonify({"msg": "Missing JSON in request"}), 400
-
-    osm_access_token = request.json.get("osm_access_token", None)
-    if osm_access_token is None:
-        return jsonify({"msg": "Missing OpenStreetMap Access Token"}), 400
-
-    osm_access_token_secret = request.json.get("osm_access_token_secret", None)
-    if osm_access_token_secret is None:
-        return jsonify({"msg": "Missing OpenStreetMap Access Token Secret"}), 400
-
-    # Verify that their access token is legit - function checks DB or asks OSM itself.
-    osm_uid, osm_display_name = verify_osm_access_token(osm_access_token, osm_access_token_secret)
-    if not osm_uid:
-        return jsonify({"msg": "Invalid OpenStreetMap Access Token"}), 400
-
-    # If there is no user / OSM token entry in the db, create one
-    # TODO: make this less redundant? verify_osm_access_token already runs some of
-    # the queries in .save()
-    osm_token_row = OpenStreetMapToken.save(
-        osm_uid=osm_uid,
-        display_name=osm_name,
-        oauth_token=osm_access_token,
-        oauth_token_secret=osm_access_token_secret
-    )
-
-    access_token = create_access_token(identity=osm_token_row.user_id)
-    return jsonify(access_token=access_token), 200
+@bp.route("/refresh", methods=["POST"])
+@jwt_refresh_token_required
+def refresh():
+    current_user = get_jwt_identity()
+    ret = {
+        "access_token": create_access_token(current_user)
+    }
+    return jsonify(ret), 200
 
 
 def verify_osm_access_token(osm_access_token, osm_access_token_secret):

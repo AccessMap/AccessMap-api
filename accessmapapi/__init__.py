@@ -18,13 +18,15 @@ def create_app():
     load_dotenv()  # TODO: make optional / part of dev only? Try/except/fail?
     app.config.from_mapping(
         SECRET_KEY=os.getenv("FLASK_SECRET"),
-        JWT_SECRET_KEY=os.getenv("JWT_SECRET"),
         SQLALCHEMY_DATABASE_URI=os.getenv("SQLALCHEMY_DATABASE_URI"),
         SQLALCHEMY_TRACK_MODIFICATIONS=False,
         OAUTH_CACHE_DIR=os.getenv("OAUTH_CACHE_DIR"),
+        JWT_SECRET_KEY=os.getenv("JWT_SECRET"),
+        JWT_IDENTITY_CLAIM="sub",
         OSM_CLIENT_ID=os.getenv("OSM_CLIENT_ID"),
         OSM_CLIENT_SECRET=os.getenv("OSM_CLIENT_SECRET"),
-        OSM_URI=os.getenv("OSM_URI")
+        OSM_URI=os.getenv("OSM_URI"),
+        CONSUMER_CALLBACK_URI=os.getenv("CONSUMER_CALLBACK_URI")
     )
 
     # Attach database
