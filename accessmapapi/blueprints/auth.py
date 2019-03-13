@@ -21,12 +21,7 @@ bp = Blueprint("auth", __name__, url_prefix="/auth")
 
 @bp.route("/login")
 def login():
-    redirect_uri = url_for("auth.authorize", _external=True)
-    if request.is_json:
-        landing = request.json.get("landing", None)
-        if landing is not None:
-            redirect_uri = url_for("auth.authorize", _external=True)
-
+    redirect_uri = url_for("auth.authorize")
     redir = oauth.openstreetmap.authorize_redirect(redirect_uri)
     return redir
 
