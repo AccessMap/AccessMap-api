@@ -26,7 +26,8 @@ def create_app():
         OSM_CLIENT_ID=os.getenv("OSM_CLIENT_ID"),
         OSM_CLIENT_SECRET=os.getenv("OSM_CLIENT_SECRET"),
         OSM_URI=os.getenv("OSM_URI"),
-        CONSUMER_CALLBACK_URI=os.getenv("CONSUMER_CALLBACK_URI")
+        CONSUMER_CALLBACK_URI=os.getenv("CONSUMER_CALLBACK_URI"),
+        APPLICATION_ROOT=os.getenv("APPLICATION_ROOT")
     )
 
     # Attach database
