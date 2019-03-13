@@ -159,6 +159,14 @@ Flask = ">=0.10"
 SQLAlchemy = ">=0.8.0"
 
 [[package]]
+category = "main"
+description = "WSGI HTTP Server for UNIX"
+name = "gunicorn"
+optional = false
+python-versions = ">=2.6, !=3.0.*, !=3.1.*"
+version = "19.9.0"
+
+[[package]]
 category = "dev"
 description = "File identification library for Python"
 name = "identify"
@@ -355,7 +363,7 @@ python-versions = ">=2.7"
 version = "0.3.3"
 
 [metadata]
-content-hash = "c64b8d4f0cd5cfbe586c39290615affeb2f7d93aed709661323921128511b72b"
+content-hash = "eee3b922441d1d8e4a8cc5887b6e8f0e623bf04b3be053742e77c2abc94325d7"
 python-versions = "^3.6"
 
 [metadata.hashes]
@@ -374,6 +382,7 @@ cryptography = ["066f815f1fe46020877c5983a7e747ae140f517f1b09030ec098503575265ce
 flask = ["2271c0070dbcb5275fad4a82e29f23ab92682dc45f9dfbc22c02ba9b9322ce48", "a080b744b7e345ccfcbc77954861cb05b3c63786e93f2b3875e0913d44b43f05"]
 flask-jwt-extended = ["68035dba637fd58c0f0b308e49103cba7f6977aa301d958ddbd7b811a91c6dec"]
 flask-sqlalchemy = ["3bc0fac969dd8c0ace01b32060f0c729565293302f0c4269beed154b46bec50b", "5971b9852b5888655f11db634e87725a9031e170f37c0ce7851cf83497f56e53"]
+gunicorn = ["aa8e0b40b4157b36a5df5e599f45c9c76d6af43845ba3b3b0efe2c70473c2471", "fa2662097c66f920f53f70621c6c58ca4a3c4d3434205e608e121b5b3b71f4f3"]
 identify = ["407cbb36e8b72b45cfa96a97ae13ccabca4c36557e03616958bd895dfcd3f77d", "721abbbb1269fa1172799119981c22c5ace022544ce82eedc29b1b0d753baaa5"]
 idna = ["c357b3f628cf53ae2c4c05627ecc484553142ca23264e593d327bcde5e9c3407", "ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"]
 importlib-metadata = ["a17ce1a8c7bff1e8674cb12c992375d8d0800c9190177ecf0ad93e0097224095", "b50191ead8c70adfa12495fba19ce6d75f2e0275c14c5a7beb653d6799b512bd"]

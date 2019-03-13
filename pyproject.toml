@@ -12,6 +12,7 @@ flask_jwt_extended = "^3.18"
 authlib = "^0.10.0"
 flask-sqlalchemy = "^2.3"
 python-dotenv = "^0.10.1"
+gunicorn = "^19.9"
 
 [tool.poetry.dev-dependencies]
 black = "=18.9b0"
