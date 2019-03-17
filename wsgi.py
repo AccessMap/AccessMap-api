@@ -18,6 +18,7 @@ class ReverseProxied:
         return self.wsgi_app(environ, start_response)
 
 
-app = create_app()
-
-app.wsgi_app = ReverseProxied(app.wsgi_app, "/api")
+def build_app(endpoint="/api"):
+    app = create_app()
+    app.wsgi_app = ReverseProxied(app.wsgi_app, endpoint)
+    return app
