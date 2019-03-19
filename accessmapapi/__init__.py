@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from . import auth
 from . import jwt
-from .models import db
+from .models import init_app as db_init_app
 from . import blueprints
 
 
@@ -30,12 +30,7 @@ def create_app():
     )
 
     # Attach database
-    db.init_app(app)
-
-    # Migrate database
-    # FIXME: move db creation stuff into a separate, trackable migration framework
-    with app.app_context():
-        db.create_all()
+    db_init_app(app)
 
     # Add oauth interface
     auth.init_app(app)
