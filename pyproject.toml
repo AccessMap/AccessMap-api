@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "accessmap-api"
-version = "0.1.0"
+version = "0.1.1"
 description = "AccessMap core web API: pedestrian profiles, etc."
 authors = ["Nick Bolten <nbolten@gmail.com>"]
 license = "MIT"
