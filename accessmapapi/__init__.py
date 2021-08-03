@@ -19,7 +19,7 @@ REQUIRED = [
     "OSM_CLIENT_ID",
     "OSM_CLIENT_SECRET",
     "OSM_URI",
-    "CONSUMER_CALLBACK_URI"
+    "OSM_CONSUMER_CALLBACK_URI"
 ]
 
 
@@ -47,7 +47,7 @@ def create_app():
         OSM_CLIENT_ID=os.getenv("OSM_CLIENT_ID"),
         OSM_CLIENT_SECRET=os.getenv("OSM_CLIENT_SECRET"),
         OSM_URI=os.getenv("OSM_URI", DEFAULTS["OSM_URI"]),
-        CONSUMER_CALLBACK_URI=os.getenv("CONSUMER_CALLBACK_URI")
+        OSM_CONSUMER_CALLBACK_URI=os.getenv("OSM_CONSUMER_CALLBACK_URI")
     )
     for env_var in REQUIRED:
         env = app.config.get(env_var, None)

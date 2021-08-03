@@ -61,7 +61,7 @@ def authorize():
     # callback URI - new clients are registered by creating a new pair of:
     #    - API Key
     #    - (short) list of allowed callback URIs
-    consumer_callback_uri = current_app.config.get("CONSUMER_CALLBACK_URI")
+    consumer_callback_uri = current_app.config.get("OSM_CONSUMER_CALLBACK_URI")
 
     url = "{}?access_token={}&refresh_token={}".format(consumer_callback_uri, access_token, refresh_token)
 
