@@ -71,11 +71,11 @@ you will need to separately register OAuth 1.0a applications for the testing
 OpenStreetMap API vs. the main one, so they will have different `OSM_CLIENT_ID` and
 `OSM_CLIENT_SECRET` credentials.
 
-- `CONSUMER_CALLBACK_URI` (required): as a security precaution, this API will currently
+- `OSM_CONSUMER_CALLBACK_URI` (required): as a security precaution, this API will currently
 only send OAuth callback redirects to a URI (URL) defined by this environment variable.
 The callback URI defined by this variable will be appended with `access_token` and
 `refresh_token` URL parameters defining a JWT access token and a JWT refresh token for
-use with protected `accessmap-api` endpoints. `CONSUMER_CALLBACK_URI` should therefore
+use with protected `accessmap-api` endpoints. `OSM_CONSUMER_CALLBACK_URI` should therefore
 be a client URI such as an instance of `accessmap-webapp`, e.g.
 `http://localhost:3000/callback` in development mode.
 
