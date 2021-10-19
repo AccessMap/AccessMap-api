@@ -51,7 +51,7 @@ class OpenStreetMapToken(db.Model):
                 user_id=user.user_id,
                 display_name=display_name,
                 oauth_token=oauth_token,
-                oauth_token_secret=oauth_token_secret
+                oauth_token_secret=oauth_token_secret,
             )
         else:
             osm_user.display_name = display_name  # Sometimes this changes
@@ -67,7 +67,9 @@ class OpenStreetMapToken(db.Model):
 class Profile(db.Model):
     profile_id = db.Column(db.Integer, primary_key=True)
     # TODO: remove uniqueness constraint when adding multiple profiles functionality
-    user_id = db.Column(db.ForeignKey("user.user_id"), nullable=False, unique=True)
+    user_id = db.Column(
+        db.ForeignKey("user.user_id"), nullable=False, unique=True
+    )
     uphill_max = db.Column(db.Float, nullable=False)
     downhill_max = db.Column(db.Float, nullable=False)
     avoid_curbs = db.Column(db.Boolean, nullable=False)
@@ -81,7 +83,7 @@ class Profile(db.Model):
                 user_id=user_id,
                 uphill_max=uphill_max,
                 downhill_max=downhill_max,
-                avoid_curbs=avoid_curbs
+                avoid_curbs=avoid_curbs,
             )
             db.session.add(profile)
             db.session.flush()
@@ -97,10 +99,10 @@ class Profile(db.Model):
 
 
 def _get_cache():
-    _cache = g.get('_oauth_cache')
+    _cache = g.get("_oauth_cache")
     if _cache:
         return _cache
-    _cache = FileSystemCache(current_app.config['OAUTH_CACHE_DIR'])
+    _cache = FileSystemCache(current_app.config["OAUTH_CACHE_DIR"])
     g._oauth_cache = _cache
     return _cache
 

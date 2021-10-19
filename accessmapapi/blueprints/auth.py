@@ -7,7 +7,7 @@ from flask_jwt_extended import (
     create_refresh_token,
     get_jwt_identity,
     jwt_required,
-    jwt_refresh_token_required
+    jwt_refresh_token_required,
 )
 from authlib.client import OAuth1Session
 from authlib.flask.client import OAuth
@@ -47,10 +47,10 @@ def authorize():
         osm_uid=osm_uid,
         display_name=display_name,
         oauth_token=token,
-        oauth_token_secret=token_secret
+        oauth_token_secret=token_secret,
     )
 
-    identity=osm_token_row.user_id
+    identity = osm_token_row.user_id
 
     # FIXME: identity should be a hash, not user ID.
     # FIXME: User ID should also be a hash - though not the same as identity.
@@ -63,7 +63,9 @@ def authorize():
     #    - (short) list of allowed callback URIs
     consumer_callback_uri = current_app.config.get("OSM_CONSUMER_CALLBACK_URI")
 
-    url = "{}?access_token={}&refresh_token={}".format(consumer_callback_uri, access_token, refresh_token)
+    url = "{}?access_token={}&refresh_token={}".format(
+        consumer_callback_uri, access_token, refresh_token
+    )
 
     return redirect(url)
 
@@ -72,9 +74,7 @@ def authorize():
 @jwt_refresh_token_required
 def refresh():
     current_user = get_jwt_identity()
-    ret = {
-        "access_token": create_access_token(current_user)
-    }
+    ret = {"access_token": create_access_token(current_user)}
     return jsonify(ret), 200
 
 
@@ -86,7 +86,7 @@ def verify_osm_access_token(osm_access_token, osm_access_token_secret):
     # Check the DB for an entry - if it matches, we're happy.
     oauth_token_row = OpenStreetMapToken.query.filter_by(
         osm_access_token=osm_access_token,
-        osm_access_token_secret=osm_access_token_secret
+        osm_access_token_secret=osm_access_token_secret,
     ).first()
 
     # This might be a new user requesting access. We will use their OSM access token
@@ -97,7 +97,7 @@ def verify_osm_access_token(osm_access_token, osm_access_token_secret):
             CLIENT_ID,
             CLIENT_SECRET,
             token=item.osm_token,
-            token_secret=item.osm_token_secret
+            token_secret=item.osm_token_secret,
         )
         # Need to create new user - fetch from OSM
         resp = session.get(OSM_USER_DETAILS_URL)

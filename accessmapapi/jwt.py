@@ -17,7 +17,7 @@ def add_claims_to_access_token(identity):
     return {
         "user_id": user.user_id,
         "display_name": osm_token.display_name,
-        "role": "accessmap_user"
+        "role": "accessmap_user",
     }
 
 

@@ -10,10 +10,10 @@ class ReverseProxied:
         self.wsgi_app = ProxyFix(self.wsgi_app)
 
     def __call__(self, environ, start_response):
-        environ['SCRIPT_NAME'] = self.prefix
-        path_info = environ['PATH_INFO']
+        environ["SCRIPT_NAME"] = self.prefix
+        path_info = environ["PATH_INFO"]
         if path_info.startswith(self.prefix):
-            environ['PATH_INFO'] = path_info[len(self.prefix):]
+            environ["PATH_INFO"] = path_info[len(self.prefix) :]
 
         return self.wsgi_app(environ, start_response)
 

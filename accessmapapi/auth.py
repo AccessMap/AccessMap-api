@@ -41,8 +41,12 @@ oauth = OAuth(cache=cache)
 def init_app(app):
     client_id = app.config["OSM_CLIENT_ID"]
     client_secret = app.config["OSM_CLIENT_SECRET"]
-    request_token_url = os.path.join(app.config["OSM_URI"], "oauth/request_token")
-    access_token_url = os.path.join(app.config["OSM_URI"], "oauth/access_token")
+    request_token_url = os.path.join(
+        app.config["OSM_URI"], "oauth/request_token"
+    )
+    access_token_url = os.path.join(
+        app.config["OSM_URI"], "oauth/access_token"
+    )
     authorize_url = os.path.join(app.config["OSM_URI"], "oauth/authorize")
     api_url = os.path.join(app.config["OSM_URI"], "api/0.6/")
 
@@ -57,7 +61,7 @@ def init_app(app):
         refresh_token_url=None,
         authorize_url=authorize_url,
         api_base_url=api_url,
-        client_kwargs=None
+        client_kwargs=None,
     )
 
     oauth.init_app(app)

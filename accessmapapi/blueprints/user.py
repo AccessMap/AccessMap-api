@@ -16,7 +16,4 @@ def user_profile():
         user_id=user.user_id
     ).first()
 
-    return jsonify(
-        user_id=user.user_id,
-        display_name=osm_token.display_name
-    )
+    return jsonify(user_id=user.user_id, display_name=osm_token.display_name)
