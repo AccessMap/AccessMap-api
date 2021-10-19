@@ -7,7 +7,7 @@ from flask_migrate import Migrate
 from . import auth
 from . import jwt
 from .exceptions import MissingConfigError
-from .models import db, init_app as db_init_app
+from .models import db
 from . import blueprints
 
 
@@ -64,7 +64,7 @@ def create_app():
     db.init_app(app)
 
     # Attach migration scripts (Alembic / Flask-Migrate)
-    migrate = Migrate(app, db)
+    Migrate(app, db)
 
     # Add oauth interface
     auth.init_app(app)

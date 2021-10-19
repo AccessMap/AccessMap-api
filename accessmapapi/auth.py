@@ -1,38 +1,8 @@
 import os
 
 from authlib.flask.client import OAuth
-from flask import g, session
 
-from .models import OpenStreetMapToken, cache
-
-
-# def get_current_user():
-#     user = getattr(g, 'current_user', None)
-#     if user:
-#         return user
-#
-#     sid = session.get('sid')
-#     if not sid:
-#         return None
-#
-#     user = User.query.get(sid)
-#     if not user:
-#         logout()
-#         return None
-#
-#     g.current_user = user
-#     return user
-#
-#
-# current_user = LocalProxy(get_current_user)
-#
-#
-# def fetch_token(osm_uid):
-#     user = get_current_user()
-#     osm_token = OpenStreetMapToken.query.filter_by(
-#         osm_uid=osm_uid
-#     ).first()
-#     return osm_token.to_dict()
+from .models import cache
 
 
 oauth = OAuth(cache=cache)
