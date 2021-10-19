@@ -93,13 +93,13 @@ def verify_osm_access_token(osm_access_token, osm_access_token_secret):
     # work and producing the necessary info for storing their account
     if oauth_token_row is None:
         session = OAuth1Session(
-            CLIENT_ID,
-            CLIENT_SECRET,
+            current_app.config["CLIENT_ID"],
+            current_app.config["CLIENT_SECRET"],
             token=osm_access_token,
             token_secret=osm_access_token_secret,
         )
         # Need to create new user - fetch from OSM
-        resp = session.get(OSM_USER_DETAILS_URL)
+        resp = session.get(current_app.config["OSM_USER_DETAILS_URL"])
 
         try:
             # TODO: this code is replicated twice - consolidate
@@ -109,7 +109,7 @@ def verify_osm_access_token(osm_access_token, osm_access_token_secret):
             user_dict = dict(user.attrib)
             osm_uid = user_dict["id"]
             osm_display_name = user_dict["display_name"]
-        except:
+        except Exception:
             return False
     else:
         osm_uid = oauth_token_row.osm_uid
