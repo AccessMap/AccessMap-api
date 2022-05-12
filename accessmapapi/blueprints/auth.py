@@ -1,19 +1,16 @@
-import os
 from xml.etree import ElementTree as ET
 
-from flask import Blueprint, current_app, jsonify, redirect, request, url_for
+from flask import Blueprint, current_app, jsonify, redirect, url_for
 from flask_jwt_extended import (
     create_access_token,
     create_refresh_token,
     get_jwt_identity,
-    jwt_required,
-    jwt_refresh_token_required
+    jwt_refresh_token_required,
 )
 from authlib.client import OAuth1Session
-from authlib.flask.client import OAuth
 
 from ..auth import oauth
-from ..models import User, OpenStreetMapToken
+from ..models import OpenStreetMapToken
 
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -47,23 +44,26 @@ def authorize():
         osm_uid=osm_uid,
         display_name=display_name,
         oauth_token=token,
-        oauth_token_secret=token_secret
+        oauth_token_secret=token_secret,
     )
 
-    identity=osm_token_row.user_id
+    identity = osm_token_row.user_id
 
     # FIXME: identity should be a hash, not user ID.
     # FIXME: User ID should also be a hash - though not the same as identity.
     access_token = create_access_token(identity)
     refresh_token = create_refresh_token(identity)
-    # TODO: create a whitelist of callback URIs, allow callback URI to be issued at
-    # /login endpoint. Should also create an API key that is associated with a given
-    # callback URI - new clients are registered by creating a new pair of:
+    # TODO: create a whitelist of callback URIs, allow callback URI to be
+    # issued at /login endpoint. Should also create an API key that is
+    # associated with a given callback URI - new clients are registered by
+    # creating a new pair of:
     #    - API Key
     #    - (short) list of allowed callback URIs
     consumer_callback_uri = current_app.config.get("OSM_CONSUMER_CALLBACK_URI")
 
-    url = "{}?access_token={}&refresh_token={}".format(consumer_callback_uri, access_token, refresh_token)
+    url = "{}?access_token={}&refresh_token={}".format(
+        consumer_callback_uri, access_token, refresh_token
+    )
 
     return redirect(url)
 
@@ -72,35 +72,34 @@ def authorize():
 @jwt_refresh_token_required
 def refresh():
     current_user = get_jwt_identity()
-    ret = {
-        "access_token": create_access_token(current_user)
-    }
+    ret = {"access_token": create_access_token(current_user)}
     return jsonify(ret), 200
 
 
 def verify_osm_access_token(osm_access_token, osm_access_token_secret):
-    # OSM access tokens do not expire, so there is no manual expiry check here - it is
-    # sufficient to look up the row in the database. If we want to block a user, we can
-    # just prevent their JWT access and drop the OSM access row.
+    # OSM access tokens do not expire, so there is no manual expiry check here
+    # - it is sufficient to look up the row in the database. If we want to
+    # block a user, we can just prevent their JWT access and drop the OSM
+    # access row.
 
     # Check the DB for an entry - if it matches, we're happy.
     oauth_token_row = OpenStreetMapToken.query.filter_by(
         osm_access_token=osm_access_token,
-        osm_access_token_secret=osm_access_token_secret
+        osm_access_token_secret=osm_access_token_secret,
     ).first()
 
-    # This might be a new user requesting access. We will use their OSM access token
-    # and secret to retrieve their user_id, demonstrating that the tokens work and
-    # producing the necessary info for storing their account
-    if item is None:
+    # This might be a new user requesting access. We will use their OSM access
+    # token and secret to retrieve their user_id, demonstrating that the tokens
+    # work and producing the necessary info for storing their account
+    if oauth_token_row is None:
         session = OAuth1Session(
-            CLIENT_ID,
-            CLIENT_SECRET,
-            token=item.osm_token,
-            token_secret=item.osm_token_secret
+            current_app.config["CLIENT_ID"],
+            current_app.config["CLIENT_SECRET"],
+            token=osm_access_token,
+            token_secret=osm_access_token_secret,
         )
         # Need to create new user - fetch from OSM
-        resp = session.get(OSM_USER_DETAILS_URL)
+        resp = session.get(current_app.config["OSM_USER_DETAILS_URL"])
 
         try:
             # TODO: this code is replicated twice - consolidate
@@ -110,7 +109,7 @@ def verify_osm_access_token(osm_access_token, osm_access_token_secret):
             user_dict = dict(user.attrib)
             osm_uid = user_dict["id"]
             osm_display_name = user_dict["display_name"]
-        except:
+        except Exception:
             return False
     else:
         osm_uid = oauth_token_row.osm_uid

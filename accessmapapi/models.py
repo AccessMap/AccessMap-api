@@ -1,17 +1,10 @@
-import click
 from flask import g, current_app
-from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.local import LocalProxy
 from werkzeug.contrib.cache import FileSystemCache
 
 
 db = SQLAlchemy()
-
-
-def init_app(app, db):
-    app.cli.add_command(init_db_command)
-    db.init_app(app)
 
 
 class User(db.Model):
@@ -36,11 +29,11 @@ class OpenStreetMapToken(db.Model):
     def save(self, osm_uid, display_name, oauth_token, oauth_token_secret):
         osm_user = OpenStreetMapToken.query.get({"osm_uid": osm_uid})
         if osm_user is None:
-            # This user has never logged in via OSM before and we don't have any info
-            # about linking accounts (yet): add a new row to users and one to OSM
-            # tokens
-            # TODO: prevent creation of user prior to creation of OSM user - they
-            # should be created simultaneously, otherwise rollback
+            # This user has never logged in via OSM before and we don't have
+            # any info about linking accounts (yet): add a new row to users and
+            # one to OSM tokens
+            # TODO: prevent creation of user prior to creation of OSM user -
+            # they should be created simultaneously, otherwise rollback
             user = User()
             db.session.add(user)
             db.session.flush()
@@ -51,7 +44,7 @@ class OpenStreetMapToken(db.Model):
                 user_id=user.user_id,
                 display_name=display_name,
                 oauth_token=oauth_token,
-                oauth_token_secret=oauth_token_secret
+                oauth_token_secret=oauth_token_secret,
             )
         else:
             osm_user.display_name = display_name  # Sometimes this changes
@@ -66,8 +59,11 @@ class OpenStreetMapToken(db.Model):
 
 class Profile(db.Model):
     profile_id = db.Column(db.Integer, primary_key=True)
-    # TODO: remove uniqueness constraint when adding multiple profiles functionality
-    user_id = db.Column(db.ForeignKey("user.user_id"), nullable=False, unique=True)
+    # TODO: remove uniqueness constraint when adding multiple profiles
+    # functionality
+    user_id = db.Column(
+        db.ForeignKey("user.user_id"), nullable=False, unique=True
+    )
     uphill_max = db.Column(db.Float, nullable=False)
     downhill_max = db.Column(db.Float, nullable=False)
     avoid_curbs = db.Column(db.Boolean, nullable=False)
@@ -81,7 +77,7 @@ class Profile(db.Model):
                 user_id=user_id,
                 uphill_max=uphill_max,
                 downhill_max=downhill_max,
-                avoid_curbs=avoid_curbs
+                avoid_curbs=avoid_curbs,
             )
             db.session.add(profile)
             db.session.flush()
@@ -97,10 +93,10 @@ class Profile(db.Model):
 
 
 def _get_cache():
-    _cache = g.get('_oauth_cache')
+    _cache = g.get("_oauth_cache")
     if _cache:
         return _cache
-    _cache = FileSystemCache(current_app.config['OAUTH_CACHE_DIR'])
+    _cache = FileSystemCache(current_app.config["OAUTH_CACHE_DIR"])
     g._oauth_cache = _cache
     return _cache
 

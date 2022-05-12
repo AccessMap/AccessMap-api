@@ -31,7 +31,7 @@ def set_profile():
         user_id=current_user,
         uphill_max=uphill_max,
         downhill_max=downhill_max,
-        avoid_curbs=avoid_curbs
+        avoid_curbs=avoid_curbs,
     )
 
     return jsonify({"msg": "Successfully added/updated profile"}), 200
@@ -48,9 +48,11 @@ def get_profile():
     if profile is None:
         profiles = []
     else:
-        profiles = [{
-            "uphill_max": profile.uphill_max,
-            "downhill_max": profile.downhill_max,
-            "avoid_curbs": profile.avoid_curbs
-        }]
+        profiles = [
+            {
+                "uphill_max": profile.uphill_max,
+                "downhill_max": profile.downhill_max,
+                "avoid_curbs": profile.avoid_curbs,
+            }
+        ]
     return jsonify({"profiles": profiles}), 200
