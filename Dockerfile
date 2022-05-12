@@ -20,6 +20,8 @@ COPY . /www/
 
 WORKDIR /www/
 
+RUN poetry run pip install setuptools==60.9.0
+
 RUN poetry install
 
 CMD ["poetry", "run", "python", "run.py"]
